@@ -5,6 +5,8 @@ utils.degToRad = function (d){
     return d * 0.0174532925199432957;
 }
 
+
+
 var spaceshooter = (function (){
 
     var canvas = null,
@@ -16,41 +18,41 @@ var spaceshooter = (function (){
     var Ship = function(x,y,color){
        this.x = x;
        this.y = y;
-       this.mov_x = 0;
-       this.mov_y = 0;
-       this.angle = 0;
-       this.rotation = 0;
+       var mov_x = 0,
+           mov_y = 0,
+           angle = 0,
+           rotation = 0;
        
        this.move = function (){
-         this.angle += this.rotation;
-         this.x += this.mov_x;
-         this.y += this.mov_y;
+         angle += rotation;
+         this.x += mov_x;
+         this.y += mov_y;
        };
        
        this.rotateLeft = function (){
-         this.rotation = -0.07;
+         rotation = -0.07;
        }
        
        this.rotateRight = function (){
-         this.rotation = 0.07;
+         rotation = 0.07;
        }
        
        this.forward = function (){
-         this.rotation = 0;
-         this.mov_x = Math.sin(this.angle) * 3;
-         this.mov_y = -Math.cos(this.angle) * 3;
+         rotation = 0;
+         mov_x = Math.sin(angle) * 3;
+         mov_y = -Math.cos(angle) * 3;
        }
        
        this.backward = function (){
-         this.rotation = 0;
-         this.mov_x = -Math.sin(this.angle) * 3;
-         this.mov_y = Math.cos(this.angle) * 3; 
+         rotation = 0;
+         mov_x = -Math.sin(angle) * 3;
+         mov_y = Math.cos(angle) * 3; 
        }
        
        this.draw = function (ctx){
         ctx.save();
         ctx.translate(this.x, this.y);
-        ctx.rotate(this.angle);
+        ctx.rotate(angle);
         ctx.beginPath();
         ctx.moveTo(0, -20);
         ctx.lineTo(-20, 20);
