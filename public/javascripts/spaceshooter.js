@@ -13,7 +13,7 @@ var spaceshooter = (function (){
         ship = null;
 
         
-    var Ship = function(x,y,rot){
+    var Ship = function(x,y,color){
        this.x = x;
        this.y = y;
        this.mov_x = 0;
@@ -57,7 +57,7 @@ var spaceshooter = (function (){
         ctx.lineTo(0, 10);
         ctx.lineTo(20, 20);
         ctx.closePath();
-        ctx.fillStyle = 'blue';
+        ctx.fillStyle = color;
         ctx.fill();
         ctx.lineWidth=2;
         ctx.stroke();
@@ -89,9 +89,9 @@ var spaceshooter = (function (){
    return { start : function (canvasId){
       canvas = $(canvasId)[0];
       ctx = canvas.getContext('2d');
-      ship = new Ship(500,500,0.13)
+      ship = new Ship(500,500,'red')
       items.push(ship);
-      items.push(new Ship(200,200,0));
+      items.push(new Ship(200,200,'blue'));
       initControls();
       setInterval(function (){
          repaint(ctx);
