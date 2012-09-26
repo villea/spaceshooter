@@ -21,13 +21,14 @@ var spaceshooter = (function (){
        var mov_x = 0,
            mov_y = 0,
            angle = 0,
-           rotation = 0;
+           rotation = 0,
+           speed = 4;
        
        this.move = function (){
          assertXYReset.apply(this);
          angle += rotation;
-         this.x += mov_x;
-         this.y += mov_y;
+         this.x += mov_x * speed;
+         this.y += mov_y * speed;
        };
        
        this.rotateLeft = function (){
@@ -40,14 +41,14 @@ var spaceshooter = (function (){
        
        this.forward = function (){
          rotation = 0;
-         mov_x = Math.sin(angle) * 3;
-         mov_y = -Math.cos(angle) * 3;
+         mov_x = Math.sin(angle);
+         mov_y = -Math.cos(angle);
        }
        
        this.backward = function (){
          rotation = 0;
-         mov_x = -Math.sin(angle) * 3;
-         mov_y = Math.cos(angle) * 3; 
+         mov_x = -Math.sin(angle);
+         mov_y = Math.cos(angle); 
        }
        
        this.draw = function (ctx){
