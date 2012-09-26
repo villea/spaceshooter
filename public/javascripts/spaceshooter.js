@@ -24,6 +24,7 @@ var spaceshooter = (function (){
            rotation = 0;
        
        this.move = function (){
+         assertXYReset.apply(this);
          angle += rotation;
          this.x += mov_x;
          this.y += mov_y;
@@ -64,6 +65,21 @@ var spaceshooter = (function (){
         ctx.lineWidth=2;
         ctx.stroke();
         ctx.restore();
+       }
+       
+       var assertXYReset = function (){
+         if (this.x < 0){
+            this.x = canvas.width;
+         }
+         if (this.x > canvas.width){
+            this.x = 0;
+         }
+         if (this.y < 0){
+            this.y = canvas.height;
+         }
+         if (this.y > canvas.height){
+            this.y = 0;
+         }
        }
     }    
    
