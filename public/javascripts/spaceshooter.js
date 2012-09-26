@@ -54,7 +54,7 @@ var spaceshooter = (function (){
         ctx.beginPath();
         ctx.moveTo(0, -20);
         ctx.lineTo(-20, 20);
-        //ctx.lineTo(0, 10);
+        ctx.lineTo(0, 10);
         ctx.lineTo(20, 20);
         ctx.closePath();
         ctx.fillStyle = 'blue';
