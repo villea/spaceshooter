@@ -9,6 +9,8 @@ utils.degToRad = function (d){
 
 var spaceshooter = (function (){
 
+    var FPS = 50;
+
     var canvas = null,
         ctx = null,
         items = [],
@@ -117,7 +119,7 @@ var spaceshooter = (function (){
          _.each(items,function (item){
            item.move();
          });
-      },20);
+      },1000 / FPS);
    }
    };
 })();
