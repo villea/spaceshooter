@@ -1,5 +1,11 @@
 canvas(id='game',width='1400',height='1000')
+script(src='/socket.io/socket.io.js')
 script(type='text/javascript')
    $(function (){
+     var socket = io.connect('http://localhost');
+     socket.emit("server y","u do this?");
+     socket.on("reshpwns", function (msg){
+        alert(msg);
+     })
      spaceshooter.start('#game');
    });

@@ -34,3 +34,17 @@ app.get('/', routes.index);
 app.listen(3000, function(){
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 });
+
+// Socket IO
+
+var io = require('socket.io').listen(app);
+
+io.sockets.on('connection', function (socket) {
+  console.log(socket.id+' connectorz!');
+  
+  socket.on('server y', function (qstn){
+     console.log(qstn);
+     socket.emit('reshpwns',"accualy is dolan");
+  });
+  
+});
