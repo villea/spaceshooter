@@ -28,11 +28,11 @@ var spaceshooter = (function (){
        };
        
        this.rotateLeft = function (){
-         this.rotation = -0.13;
+         this.rotation = -0.07;
        }
        
        this.rotateRight = function (){
-         this.rotation = 0.13;
+         this.rotation = 0.07;
        }
        
        this.forward = function (){
