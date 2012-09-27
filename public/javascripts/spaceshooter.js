@@ -7,7 +7,7 @@ utils.degToRad = function (d){
 
 
 
-var spaceshooter = (function (){
+var spaceshooter = function (socket){
 
     var FPS = 50;
 
@@ -34,20 +34,24 @@ var spaceshooter = (function (){
        };
        
        this.rotateLeft = function (){
+         socket.emit("action","rotateLeft");
          rotation = -0.07;
        }
        
        this.rotateRight = function (){
+         socket.emit("action","rotateRight");
          rotation = 0.07;
        }
        
        this.forward = function (){
+         socket.emit("action","forward");
          rotation = 0;
          mov_x = Math.sin(angle);
          mov_y = -Math.cos(angle);
        }
        
        this.backward = function (){
+         socket.emit("action","backward");
          rotation = 0;
          mov_x = -Math.sin(angle);
          mov_y = Math.cos(angle); 
@@ -122,4 +126,4 @@ var spaceshooter = (function (){
       },1000 / FPS);
    }
    };
-})();
+};

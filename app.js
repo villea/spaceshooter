@@ -47,4 +47,8 @@ io.sockets.on('connection', function (socket) {
      socket.emit('reshpwns',"accualy is dolan");
   });
   
+  socket.on('action', function (dir){
+    console.log("socket.id "+socket.id+" does action: "+dir);
+  });
+  
 });

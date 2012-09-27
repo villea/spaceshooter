@@ -7,5 +7,6 @@ script(type='text/javascript')
      socket.on("reshpwns", function (msg){
         alert(msg);
      })
-     spaceshooter.start('#game');
+     var game = spaceshooter(socket);
+     game.start('#game');
    });
