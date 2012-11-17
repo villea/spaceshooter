@@ -37,6 +37,65 @@ app.listen(3000, function(){
 
 // Socket IO
 
+var Ship = function(x,y,color) {
+       
+       this.x = x;
+       this.y = y;
+       this.color = color;
+
+       var mov_x = 0,
+           mov_y = 0,
+           angle = 0,
+           rotation = 0,
+           speed = 4;
+       
+       this.move = function (){
+         assertXYReset.apply(this);
+         angle += rotation;
+         this.x += mov_x * speed;
+         this.y += mov_y * speed;
+       };
+       
+       this.rotateLeft = function (){
+         rotation = -0.07;
+       }
+       
+       this.rotateRight = function (){
+         rotation = 0.07;
+       }
+       
+       this.forward = function (){
+         rotation = 0;
+         mov_x = Math.sin(angle);
+         mov_y = -Math.cos(angle);
+       }
+       
+       this.backward = function (){
+         rotation = 0;
+         mov_x = -Math.sin(angle);
+         mov_y = Math.cos(angle); 
+       }
+
+       this.shoot = function () {
+       }
+       
+      var assertXYReset = function (){
+         if (this.x < 0){
+            this.x = canvas.width;
+         }
+         if (this.x > canvas.width){
+            this.x = 0;
+         }
+         if (this.y < 0){
+            this.y = canvas.height;
+         }
+         if (this.y > canvas.height){
+            this.y = 0;
+         }
+       }
+    }
+
+
 var io = require('socket.io').listen(app);
 
 io.sockets.on('connection', function (socket) {
@@ -45,6 +104,11 @@ io.sockets.on('connection', function (socket) {
   socket.on('server y', function (qstn){
      console.log(qstn);
      socket.emit('reshpwns',"accualy is dolan");
+  });
+
+  socket.on('game', function (type, ship) {
+     console.log("Game event: " + type);
+     ship(new Ship(500,500,'red'));
   });
   
   socket.on('action', function (dir){

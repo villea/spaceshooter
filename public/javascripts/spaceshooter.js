@@ -56,6 +56,10 @@ var spaceshooter = function (socket){
          mov_x = -Math.sin(angle);
          mov_y = Math.cos(angle); 
        }
+
+       this.shoot = function () {
+         socket.emit("action", "shoot");
+       }
        
        this.draw = function (ctx){
         ctx.save();
@@ -107,16 +111,23 @@ var spaceshooter = function (socket){
          case 38: ship.forward();break;
          case 39: ship.rotateRight();break;
          case 40: ship.backward();break;
+         case 32: ship.shoot();break;
         }
+      });
+   };
+
+   var join = function() {
+      socket.emit("game", "join", function (data) {
+        console.log(data);
+        ship = new Ship(data.x,data.y,data.color);
+        items.push(ship);
       });
    };
    
    return { start : function (canvasId){
       canvas = $(canvasId)[0];
       ctx = canvas.getContext('2d');
-      ship = new Ship(500,500,'red')
-      items.push(ship);
-      items.push(new Ship(200,200,'blue'));
+      join();
       initControls();
       setInterval(function (){
          repaint(ctx);
