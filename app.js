@@ -43,6 +43,8 @@ var Ship = function(x,y,color) {
        this.y = y;
        this.color = color;
 
+       var canvas = { height: 600, width: 800 }
+     
        var mov_x = 0,
            mov_y = 0,
            angle = 0,
@@ -106,13 +108,22 @@ io.sockets.on('connection', function (socket) {
      socket.emit('reshpwns',"accualy is dolan");
   });
 
-  socket.on('game', function (type, ship) {
-     console.log("Game event: " + type);
-     ship(new Ship(500,500,'red'));
+  socket.on('join', function (ship) {
+     console.log("Join: " + socket.id);
+     var s = new Ship(500,500,'red'); 
+     ships[socket.id] = s;
+     ship(s);
   });
   
   socket.on('action', function (dir){
     console.log("socket.id "+socket.id+" does action: "+dir);
   });
-  
 });
+
+var FPS = 50;
+ships = [];
+setInterval(function (){
+  for (var name in ships) {
+    ships[name].move();
+  }
+},1000 / FPS);

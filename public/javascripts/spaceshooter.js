@@ -15,7 +15,6 @@ var spaceshooter = function (socket){
         ctx = null,
         items = [],
         ship = null;
-
         
     var Ship = function(x,y,color){
        this.x = x;
@@ -117,12 +116,17 @@ var spaceshooter = function (socket){
    };
 
    var join = function() {
-      socket.emit("game", "join", function (data) {
+      socket.emit("join", function (data) {
         console.log(data);
         ship = new Ship(data.x,data.y,data.color);
         items.push(ship);
       });
    };
+
+  socket.on('update', function (data) {
+    console.log(data);
+    socket.emit('my other event', { my: 'data' });
+  });
    
    return { start : function (canvasId){
       canvas = $(canvasId)[0];
