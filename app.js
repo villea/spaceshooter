@@ -35,7 +35,8 @@ app.listen(3000, function(){
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 });
 
-// Socket IO
+var FPS = 50;
+var ships = [];
 
 var Ship = function(x,y,color) {
        
@@ -97,6 +98,7 @@ var Ship = function(x,y,color) {
        }
     }
 
+// Socket IO
 
 var io = require('socket.io').listen(app);
 
@@ -111,19 +113,19 @@ io.sockets.on('connection', function (socket) {
   socket.on('join', function (ship) {
      console.log("Join: " + socket.id);
      var s = new Ship(500,500,'red'); 
-     ships[socket.id] = s;
+     ships.push(s);
      ship(s);
   });
   
   socket.on('action', function (dir){
     console.log("socket.id "+socket.id+" does action: "+dir);
-  });
+  }); 
+
 });
 
-var FPS = 50;
-ships = [];
 setInterval(function (){
-  for (var name in ships) {
-    ships[name].move();
-  }
+  ships.forEach(function (element) {
+    element.move();
+  });
+  io.sockets.emit('update', JSON.stringify(ships));
 },1000 / FPS);
