@@ -102,6 +102,7 @@ var Ship = function(x, y, color) {
 // Socket IO
 
 var io = require('socket.io').listen(app);
+io.set('log level', 1);
 
 io.sockets.on('connection', function (socket) {
   console.log(socket.id+' connectorz!');
