@@ -116,7 +116,6 @@ io.sockets.on('connection', function (socket) {
      console.log("Join: " + socket.id);
      var s = new Ship(500,500,colors.pop()); 
      ships[socket.id] = s;
-     ship(s);
   });
   
   socket.on('action', function (dir){
