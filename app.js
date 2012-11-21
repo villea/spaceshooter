@@ -37,6 +37,7 @@ app.listen(3000, function(){
 
 var FPS = 50;
 var ships = [];
+var colors = ["red", "blue"];
 
 var Ship = function(x,y,color) {
        
@@ -112,7 +113,7 @@ io.sockets.on('connection', function (socket) {
 
   socket.on('join', function (ship) {
      console.log("Join: " + socket.id);
-     var s = new Ship(500,500,'red'); 
+     var s = new Ship(500,500,colors.pop()); 
      ships.push(s);
      ship(s);
   });
