@@ -70,14 +70,14 @@ var Ship = function(x, y, color) {
        
        this.forward = function (){
          rotation = 0;
-         mov_x = Math.sin(angle);
-         mov_y = -Math.cos(angle);
+         mov_x = Math.sin(this.angle);
+         mov_y = -Math.cos(this.angle);
        }
        
        this.backward = function (){
          rotation = 0;
-         mov_x = -Math.sin(angle);
-         mov_y = Math.cos(angle); 
+         mov_x = -Math.sin(this.angle);
+         mov_y = Math.cos(this.angle); 
        }
 
        this.shoot = function () {
@@ -114,6 +114,14 @@ io.sockets.on('connection', function (socket) {
   
   socket.on('action', function (dir){
     console.log("socket.id "+socket.id+" does action: "+dir);
+    switch (dir)
+    {
+      case "rotateLeft" : ships[socket.id].rotateLeft(); break;
+      case "forward" : ships[socket.id].forward(); break;
+      case "rotateRight" : ships[socket.id].rotateRight(); break;
+      case "backward": ships[socket.id].backward(); break;
+      case "shoot": ships[socket.id].shoot(); break;
+    }
   }); 
 
 });
