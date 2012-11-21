@@ -105,13 +105,7 @@ var io = require('socket.io').listen(app);
 io.set('log level', 1);
 
 io.sockets.on('connection', function (socket) {
-  console.log(socket.id+' connectorz!');
   
-  socket.on('server y', function (qstn){
-     console.log(qstn);
-     socket.emit('reshpwns',"accualy is dolan");
-  });
-
   socket.on('join', function (ship) {
      console.log("Join: " + socket.id);
      var s = new Ship(500,500,colors.pop()); 
