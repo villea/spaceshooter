@@ -36,26 +36,26 @@ app.listen(3000, function(){
 });
 
 var FPS = 50;
-var ships = [];
+var ships = {};
 var colors = ["red", "blue"];
 
-var Ship = function(x,y,color) {
-       
+var Ship = function(x, y, color) {
+
        this.x = x;
        this.y = y;
        this.color = color;
+       this.angle = 0;
 
        var canvas = { height: 600, width: 800 }
      
        var mov_x = 0,
            mov_y = 0,
-           angle = 0,
            rotation = 0,
            speed = 4;
        
        this.move = function (){
          assertXYReset.apply(this);
-         angle += rotation;
+         this.angle += rotation;
          this.x += mov_x * speed;
          this.y += mov_y * speed;
        };
@@ -114,7 +114,7 @@ io.sockets.on('connection', function (socket) {
   socket.on('join', function (ship) {
      console.log("Join: " + socket.id);
      var s = new Ship(500,500,colors.pop()); 
-     ships.push(s);
+     ships[socket.id] = s;
      ship(s);
   });
   
@@ -125,8 +125,10 @@ io.sockets.on('connection', function (socket) {
 });
 
 setInterval(function (){
-  ships.forEach(function (element) {
-    element.move();
-  });
+  for(var key in ships) {
+    if (ships.hasOwnProperty(key)) {
+      ships[key].move();
+    }
+  }
   io.sockets.emit('update', JSON.stringify(ships));
 },1000 / FPS);
