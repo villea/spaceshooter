@@ -32,7 +32,7 @@ var spaceshooter = function (socket){
         ctx.lineWidth=2;
         ctx.stroke();
         ctx.restore();
-      }
+      }, 
     };
    
    var repaint = function (ctx){
@@ -45,7 +45,7 @@ var spaceshooter = function (socket){
         }
    };
    
-   var Controls = {
+   var controls = {
       rotateLeft : function () {
          socket.emit("action","rotateLeft");
        },
@@ -64,7 +64,6 @@ var spaceshooter = function (socket){
    }
    
    var initControls = function() {
-        controls = Object.create(Controls);
         $(window).keydown(function(e){
         switch (e.keyCode)
         {
