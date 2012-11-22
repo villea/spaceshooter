@@ -1,13 +1,5 @@
-var utils = {};
-
-utils.degToRad = function (d){
-    // Converts degrees to radians
-    return d * 0.0174532925199432957;
-}
 
 var spaceshooter = function (socket){
-
-    var FPS = 50;
 
     var canvas = null,
         ctx = null,
@@ -85,7 +77,7 @@ var spaceshooter = function (socket){
       });
    };
 
-   var join = function() {
+  function join() {
       socket.emit('join');
    };
 
