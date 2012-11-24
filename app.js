@@ -81,6 +81,11 @@ io.sockets.on('connection', function (socket) {
      var s = new shared.Ship(500,500,colors.pop(),0,0,0,0); 
      ships[socket.id] = s;
   });
+
+  socket.on('disconnect', function () {
+    colors.push(ships[socket.id].color);
+    delete ships[socket.id];
+  });
   
   socket.on('action', function (dir){
     console.log("socket.id "+socket.id+" does action: "+dir);

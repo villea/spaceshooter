@@ -72,6 +72,7 @@ var spaceshooter = function (socket){
    };
 
   socket.on('update', function (data) {
+      items = {};
       for(var key in data) {
             var s = new exports.Ship(
               data[key].x,
