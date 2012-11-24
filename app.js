@@ -4,7 +4,9 @@
  */
 
 var express = require('express')
-  , routes = require('./routes');
+  , routes = require('./routes')
+  , shared = require('./public/javascripts/shared.js')
+  , _und = require('underscore');
 
 var app = module.exports = express.createServer();
 
@@ -39,65 +41,33 @@ var FPS = 50;
 var ships = {};
 var colors = ["red", "blue"];
 
-var Ship = function(x, y, color) {
+var ExtendShip = {
+       
+       rotateLeft: function (){
+         this.rotation = -0.07;
+       },
+       
+       rotateRight: function (){
+         this.rotation = 0.07;
+       },
+       
+       forward: function (){
+         this.rotation = 0;
+         this.mov_x = Math.sin(this.angle);
+         this.mov_y = -Math.cos(this.angle);
+       },
+       
+       backward: function (){
+         this.rotation = 0;
+         this.mov_x = -Math.sin(this.angle);
+         this.mov_y = Math.cos(this.angle); 
+       },
 
-       this.x = x;
-       this.y = y;
-       this.color = color;
-       this.angle = 0;
-
-       var canvas = { height: 600, width: 800 }
-     
-       var mov_x = 0,
-           mov_y = 0,
-           rotation = 0,
-           speed = 4;
-       
-       this.move = function (){
-         assertXYReset.apply(this);
-         this.angle += rotation;
-         this.x += mov_x * speed;
-         this.y += mov_y * speed;
-       };
-       
-       this.rotateLeft = function (){
-         rotation = -0.07;
-       }
-       
-       this.rotateRight = function (){
-         rotation = 0.07;
-       }
-       
-       this.forward = function (){
-         rotation = 0;
-         mov_x = Math.sin(this.angle);
-         mov_y = -Math.cos(this.angle);
-       }
-       
-       this.backward = function (){
-         rotation = 0;
-         mov_x = -Math.sin(this.angle);
-         mov_y = Math.cos(this.angle); 
-       }
-
-       this.shoot = function () {
-       }
-       
-      var assertXYReset = function (){
-         if (this.x < 0){
-            this.x = canvas.width;
-         }
-         if (this.x > canvas.width){
-            this.x = 0;
-         }
-         if (this.y < 0){
-            this.y = canvas.height;
-         }
-         if (this.y > canvas.height){
-            this.y = 0;
-         }
+       shoot: function () {
        }
     }
+
+_und.extend(shared.Ship.prototype, ExtendShip);
 
 // Socket IO
 
@@ -107,8 +77,8 @@ io.set('log level', 1);
 io.sockets.on('connection', function (socket) {
   
   socket.on('join', function (ship) {
-     console.log("Join: " + socket.id);
-     var s = new Ship(500,500,colors.pop()); 
+     console.log("Join: " + socket.id);         
+     var s = new shared.Ship(500,500,colors.pop(),0,0,0,0); 
      ships[socket.id] = s;
   });
   
@@ -128,9 +98,7 @@ io.sockets.on('connection', function (socket) {
 
 setInterval(function (){
   for(var key in ships) {
-    if (ships.hasOwnProperty(key)) {
       ships[key].move();
-    }
   }
-  io.sockets.emit('update', JSON.stringify(ships));
+  io.sockets.emit('update', ships);
 },1000 / FPS);
