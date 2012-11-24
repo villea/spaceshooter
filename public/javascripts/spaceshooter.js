@@ -26,7 +26,7 @@ var spaceshooter = function (socket){
         }
     }
 
-    _.extend(Ship.prototype, ExtendShip);
+    _.extend(exports.Ship.prototype, ExtendShip);
 
     var repaint = function (ctx){
         ctx.fillStyle = "rgb(140,140,140)";
@@ -73,7 +73,7 @@ var spaceshooter = function (socket){
 
   socket.on('update', function (data) {
       for(var key in data) {
-            var s = new Ship(
+            var s = new exports.Ship(
               data[key].x,
               data[key].y,
               data[key].color,

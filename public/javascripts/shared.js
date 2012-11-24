@@ -1,7 +1,9 @@
 
+if(typeof exports == 'undefined'){
+    var exports = {};
+}
 
-
-var Ship = function(x, y, color, angle, m_x, m_y, rot) {
+exports.Ship = function(x, y, color, angle, m_x, m_y, rot) {
       
       this.x = x;
       this.y = y;
@@ -35,9 +37,3 @@ var Ship = function(x, y, color, angle, m_x, m_y, rot) {
 	     }
  	}
 };
-
-if(typeof exports == 'undefined'){
-    var exports = {};
-}
-
-exports.Ship = Ship;
