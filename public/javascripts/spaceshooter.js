@@ -4,9 +4,9 @@ var spaceshooter = function (socket){
     var canvas = null,
         ctx = null,
         items = {},
-        controls = null
+        controls = null;
       
-    var ExtendShip = {
+    _.extend(exports.Ship.prototype, {
         draw: function (ctx) 
         {
             ctx.save();
@@ -24,9 +24,7 @@ var spaceshooter = function (socket){
             ctx.stroke();
             ctx.restore();
         }
-    }
-
-    _.extend(exports.Ship.prototype, ExtendShip);
+    });
 
     var repaint = function (ctx){
         ctx.fillStyle = "rgb(140,140,140)";

@@ -37,37 +37,29 @@ app.listen(3000, function(){
   console.log("Express server listening on port %d in %s mode", app.address().port, app.settings.env);
 });
 
-var FPS = 50;
 var ships = {};
 var colors = ["red", "blue"];
 
-var ExtendShip = {
-       
+_und.extend(shared.Ship.prototype, {
        rotateLeft: function (){
          this.rotation = -0.07;
        },
-       
        rotateRight: function (){
          this.rotation = 0.07;
        },
-       
        forward: function (){
          this.rotation = 0;
          this.mov_x = Math.sin(this.angle);
          this.mov_y = -Math.cos(this.angle);
        },
-       
        backward: function (){
          this.rotation = 0;
          this.mov_x = -Math.sin(this.angle);
          this.mov_y = Math.cos(this.angle); 
        },
-
        shoot: function () {
        }
-    }
-
-_und.extend(shared.Ship.prototype, ExtendShip);
+  });
 
 // Socket IO
 
