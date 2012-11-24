@@ -78,25 +78,38 @@ io.sockets.on('connection', function (socket) {
   
   socket.on('join', function (ship) {
      console.log("Join: " + socket.id);         
-     var s = new shared.Ship(500,500,colors.pop(),0,0,0,0); 
+     var s = new shared.Ship(500,500,colors.pop(),0,0,0,0);
      ships[socket.id] = s;
+     io.sockets.emit('update', ships);
   });
 
   socket.on('disconnect', function () {
     colors.push(ships[socket.id].color);
     delete ships[socket.id];
+    io.sockets.emit('update', ships);
   });
   
   socket.on('action', function (dir){
     console.log("socket.id "+socket.id+" does action: "+dir);
     switch (dir)
     {
-      case "rotateLeft" : ships[socket.id].rotateLeft(); break;
-      case "forward" : ships[socket.id].forward(); break;
-      case "rotateRight" : ships[socket.id].rotateRight(); break;
-      case "backward": ships[socket.id].backward(); break;
-      case "shoot": ships[socket.id].shoot(); break;
+      case "rotateLeft" : 
+            ships[socket.id].rotateLeft(); 
+            break;
+      case "forward" : 
+            ships[socket.id].forward();
+            break;
+      case "rotateRight" :
+            ships[socket.id].rotateRight(); 
+            break;
+      case "backward": 
+            ships[socket.id].backward();
+            break;
+      case "shoot": 
+            ships[socket.id].shoot();
+            break; 
     }
+    io.sockets.emit('update', ships);
   }); 
 
 });
@@ -105,5 +118,4 @@ setInterval(function (){
   for(var key in ships) {
       ships[key].move();
   }
-  io.sockets.emit('update', ships);
-},1000 / FPS);
+},1000 / shared.FPS);

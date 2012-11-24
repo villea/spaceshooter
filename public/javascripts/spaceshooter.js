@@ -4,8 +4,8 @@ var spaceshooter = function (socket){
     var canvas = null,
         ctx = null,
         items = {},
-        controls = null;
-
+        controls = null
+      
     var ExtendShip = {
         draw: function (ctx) 
         {
@@ -72,6 +72,7 @@ var spaceshooter = function (socket){
    };
 
   socket.on('update', function (data) {
+      console.log(data);
       items = {};
       for(var key in data) {
             var s = new exports.Ship(
@@ -84,14 +85,20 @@ var spaceshooter = function (socket){
               data[key].rotation);
             items[key] = s; 
       }
-      ctx = canvas.getContext('2d');
-      repaint(ctx);
   });
    
    return { start : function (canvasId) {
         canvas = $(canvasId)[0];
+        ctx = canvas.getContext('2d');
+        repaint(ctx);
         join();
         initControls();   
+        setInterval(function (){
+            repaint(ctx);
+            _.each(items, function (item){
+              item.move();
+            });
+        },1000 / exports.FPS);
       }
    };
 };

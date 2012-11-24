@@ -3,6 +3,8 @@ if(typeof exports == 'undefined'){
     var exports = {};
 }
 
+exports.FPS = 50;
+
 exports.Ship = function(x, y, color, angle, m_x, m_y, rot) {
       
       this.x = x;
