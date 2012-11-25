@@ -38,6 +38,7 @@ app.listen(3000, function(){
 });
 
 var ships = {};
+var bullets = {};
 var colors = ["red", "blue"];
 
 _und.extend(shared.Ship.prototype, {
@@ -56,10 +57,18 @@ _und.extend(shared.Ship.prototype, {
          this.rotation = 0;
          this.mov_x = -Math.sin(this.angle);
          this.mov_y = Math.cos(this.angle); 
-       },
-       shoot: function () {
        }
   });
+
+_und.extend(shared.Bullet.prototype, {
+  isOut: function () {
+      if (this.x < 0 
+          || this.x > shared.area.width 
+          || this.y < 0 
+          || this.y > shared.area.height)
+      { return true; }
+  }
+});
 
 // Socket IO
 
@@ -72,13 +81,13 @@ io.sockets.on('connection', function (socket) {
      console.log("Join: " + socket.id);         
      var s = new shared.Ship(500,500,colors.pop(),0,0,0,0);
      ships[socket.id] = s;
-     io.sockets.emit('update', ships);
+     sendUpdate();
   });
 
   socket.on('disconnect', function () {
     colors.push(ships[socket.id].color);
     delete ships[socket.id];
-    io.sockets.emit('update', ships);
+    sendUpdate();
   });
   
   socket.on('action', function (dir){
@@ -98,16 +107,29 @@ io.sockets.on('connection', function (socket) {
             ships[socket.id].backward();
             break;
       case "shoot": 
-            ships[socket.id].shoot();
+            bullets[socket.id] = new shared.Bullet(ships[socket.id].x,ships[socket.id].y,ships[socket.id].angle);
             break; 
     }
-    io.sockets.emit('update', ships);
+    sendUpdate();
   }); 
 
 });
+
+function sendUpdate() {
+  var data = { ships: ships, bullets: bullets}
+  io.sockets.emit('update', data);
+}
 
 setInterval(function (){
   for(var key in ships) {
       ships[key].move();
   }
+  for(var key in bullets) {
+      bullets[key].move();
+      if(bullets[key].isOut()) {
+        delete bullets[key];
+        sendUpdate();
+      }
+  }
+  //console.log(bullets);
 },1000 / shared.FPS);
