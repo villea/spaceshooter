@@ -3,8 +3,7 @@ var spaceshooter = function (socket){
 
     var canvas = null,
         ctx = null,
-        ships = {},
-        bullets = {},
+        items = [],
         controls = null;
       
     _.extend(exports.Ship.prototype, {
@@ -45,12 +44,9 @@ var spaceshooter = function (socket){
     var repaint = function (ctx){
         ctx.fillStyle = "rgb(140,140,140)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        for(var key in ships) {
-            ships[key].draw(ctx);
-        }
-        for(var key in bullets) {
-            bullets[key].draw(ctx);
-        }
+        _.each(items, function (item){
+            item.draw(ctx);
+        });
    };
    
    var controls = {
@@ -90,24 +86,23 @@ var spaceshooter = function (socket){
 
   socket.on('update', function (data) {
       console.log(data);
-      ships = {};
-      bullets = {};
+      items = [];
       for(var key in data.ships) {
-            ships[key] = new exports.Ship(
+            items.push(new exports.Ship(
               data.ships[key].x,
               data.ships[key].y,
               data.ships[key].color,
               data.ships[key].angle,
               data.ships[key].mov_x,
               data.ships[key].mov_y,
-              data.ships[key].rotation);
+              data.ships[key].rotation));
       }
       for(var key in data.bullets) {
-          bullets[key] = new exports.Bullet(
+          items.push(new exports.Bullet(
               data.bullets[key].x,
               data.bullets[key].y,
               data.bullets[key].angle
-            );
+            ));
 
       }
   });
@@ -120,10 +115,7 @@ var spaceshooter = function (socket){
         initControls();   
         setInterval(function (){
             repaint(ctx);
-            _.each(ships, function (item){
-              item.move();
-            });
-            _.each(bullets, function (item){
+            _.each(items, function (item){
               item.move();
             });
         },1000 / exports.FPS);

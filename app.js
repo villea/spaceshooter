@@ -131,5 +131,4 @@ setInterval(function (){
         sendUpdate();
       }
   }
-  //console.log(bullets);
 },1000 / shared.FPS);
