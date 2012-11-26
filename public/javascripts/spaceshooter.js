@@ -85,7 +85,6 @@ var spaceshooter = function (socket){
    };
 
   socket.on('update', function (data) {
-      console.log(data);
       items = [];
       for(var key in data.ships) {
           items.push(new exports.Ship(
