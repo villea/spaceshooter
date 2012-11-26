@@ -38,7 +38,7 @@ app.listen(3000, function(){
 });
 
 var ships = {};
-var bullets = {};
+var bullets = [];
 var colors = ["red", "blue"];
 
 _und.extend(shared.Ship.prototype, {
@@ -63,10 +63,11 @@ _und.extend(shared.Ship.prototype, {
 _und.extend(shared.Bullet.prototype, {
   isOut: function () {
       if (this.x < 0 
-          || this.x > shared.area.width 
-          || this.y < 0 
-          || this.y > shared.area.height)
-      { return true; }
+        || this.x > shared.area.width 
+        || this.y < 0 
+        || this.y > shared.area.height) { 
+        return true; 
+      }
   }
 });
 
@@ -107,7 +108,7 @@ io.sockets.on('connection', function (socket) {
             ships[socket.id].backward();
             break;
       case "shoot": 
-            bullets[socket.id] = new shared.Bullet(ships[socket.id].x,ships[socket.id].y,ships[socket.id].angle);
+            bullets.push(new shared.Bullet(ships[socket.id].x, ships[socket.id].y, ships[socket.id].angle, socket.id));
             break; 
     }
     sendUpdate();
@@ -124,11 +125,11 @@ setInterval(function (){
   for(var key in ships) {
       ships[key].move();
   }
-  for(var key in bullets) {
-      bullets[key].move();
-      if(bullets[key].isOut()) {
-        delete bullets[key];
+  for (var i = 0; i < bullets.length; i++) {
+    bullets[i].move();
+    if(bullets[i].isOut()) {
+        bullets.splice(i, 1);
         sendUpdate();
-      }
+    }
   }
 },1000 / shared.FPS);

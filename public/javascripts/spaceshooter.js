@@ -88,23 +88,23 @@ var spaceshooter = function (socket){
       console.log(data);
       items = [];
       for(var key in data.ships) {
-            items.push(new exports.Ship(
-              data.ships[key].x,
-              data.ships[key].y,
-              data.ships[key].color,
-              data.ships[key].angle,
-              data.ships[key].mov_x,
-              data.ships[key].mov_y,
-              data.ships[key].rotation));
-      }
-      for(var key in data.bullets) {
-          items.push(new exports.Bullet(
-              data.bullets[key].x,
-              data.bullets[key].y,
-              data.bullets[key].angle
-            ));
-
-      }
+          items.push(new exports.Ship(
+            data.ships[key].x,
+            data.ships[key].y,
+            data.ships[key].color,
+            data.ships[key].angle,
+            data.ships[key].mov_x,
+            data.ships[key].mov_y,
+            data.ships[key].rotation));
+          }
+          _.each(data.bullets, function (bullet){
+               items.push(new exports.Bullet(
+                  bullet.x,
+                  bullet.y,
+                  bullet.angle,
+                  bullet.id
+              ));
+           });
   });
    
    return { start : function (canvasId) {

@@ -7,10 +7,11 @@ exports.FPS = 50;
 
 exports.area = { height: 600, width: 800 };
 
-exports.Bullet = function(x, y, angle) {
+exports.Bullet = function(x, y, angle, id) {
 	this.x = x;
 	this.y = y;
 	this.angle = angle;
+	this.id = id;
 
 	var mov_x = Math.sin(angle)
 		,mov_y = -Math.cos(angle) 
@@ -23,7 +24,7 @@ exports.Bullet = function(x, y, angle) {
 };
 
 exports.Ship = function(x, y, color, angle, m_x, m_y, rot) {
-      
+  
       this.x = x;
       this.y = y;
       this.color = color;
