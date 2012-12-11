@@ -1,129 +1,123 @@
-var utils = {};
-
-utils.degToRad = function (d){
-    // Converts degrees to radians
-    return d * 0.0174532925199432957;
-}
-
-
 
 var spaceshooter = function (socket){
-
-    var FPS = 50;
 
     var canvas = null,
         ctx = null,
         items = [],
-        ship = null;
+        controls = null;
+      
+    _.extend(exports.Ship.prototype, {
+        draw: function (ctx) 
+        {
+            ctx.save();
+            ctx.translate(this.x, this.y);
+            ctx.rotate(this.angle);
+            ctx.beginPath();
+            ctx.moveTo(0, -20);
+            ctx.lineTo(-20, 20);
+            ctx.lineTo(0, 10);
+            ctx.lineTo(20, 20);
+            ctx.closePath();
+            ctx.fillStyle = this.color;
+            ctx.fill();
+            ctx.lineWidth=2;
+            ctx.stroke();
+            ctx.restore();
+        }
+    });
 
-        
-    var Ship = function(x,y,color){
-       this.x = x;
-       this.y = y;
-       var mov_x = 0,
-           mov_y = 0,
-           angle = 0,
-           rotation = 0,
-           speed = 4;
-       
-       this.move = function (){
-         assertXYReset.apply(this);
-         angle += rotation;
-         this.x += mov_x * speed;
-         this.y += mov_y * speed;
-       };
-       
-       this.rotateLeft = function (){
-         socket.emit("action","rotateLeft");
-         rotation = -0.07;
-       }
-       
-       this.rotateRight = function (){
-         socket.emit("action","rotateRight");
-         rotation = 0.07;
-       }
-       
-       this.forward = function (){
-         socket.emit("action","forward");
-         rotation = 0;
-         mov_x = Math.sin(angle);
-         mov_y = -Math.cos(angle);
-       }
-       
-       this.backward = function (){
-         socket.emit("action","backward");
-         rotation = 0;
-         mov_x = -Math.sin(angle);
-         mov_y = Math.cos(angle); 
-       }
-       
-       this.draw = function (ctx){
-        ctx.save();
-        ctx.translate(this.x, this.y);
-        ctx.rotate(angle);
-        ctx.beginPath();
-        ctx.moveTo(0, -20);
-        ctx.lineTo(-20, 20);
-        ctx.lineTo(0, 10);
-        ctx.lineTo(20, 20);
-        ctx.closePath();
-        ctx.fillStyle = color;
-        ctx.fill();
-        ctx.lineWidth=2;
-        ctx.stroke();
-        ctx.restore();
-       }
-       
-       var assertXYReset = function (){
-         if (this.x < 0){
-            this.x = canvas.width;
-         }
-         if (this.x > canvas.width){
-            this.x = 0;
-         }
-         if (this.y < 0){
-            this.y = canvas.height;
-         }
-         if (this.y > canvas.height){
-            this.y = 0;
-         }
-       }
-    }    
-   
-   var repaint = function (ctx){
+    _.extend(exports.Bullet.prototype, {
+        draw: function (ctx) {
+          ctx.save();
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, 10, 0, 2 * Math.PI, false);
+          ctx.closePath();
+          ctx.fillStyle = 'green';
+          ctx.fill();
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = '#003300';
+          ctx.stroke();
+          ctx.restore();
+        }
+    });
+
+    var repaint = function (ctx){
         ctx.fillStyle = "rgb(140,140,140)";
         ctx.fillRect(0, 0, canvas.width, canvas.height);
-        _.each(items,function (item){
-          item.draw(ctx);
+        _.each(items, function (item){
+            item.draw(ctx);
         });
    };
    
+   var controls = {
+      rotateLeft : function () {
+         socket.emit("action","rotateLeft");
+       },
+       rotateRight : function () {
+         socket.emit("action","rotateRight");
+       },
+       forward : function () {
+         socket.emit("action","forward");
+       },
+       backward : function () {
+         socket.emit("action","backward");
+       },
+       shoot : function () {
+         socket.emit("action", "shoot");
+       }
+   }
    
    var initControls = function() {
         $(window).keydown(function(e){
         switch (e.keyCode)
         {
-         case 37: ship.rotateLeft();break;
-         case 38: ship.forward();break;
-         case 39: ship.rotateRight();break;
-         case 40: ship.backward();break;
+          case 37: controls.rotateLeft();break;
+          case 38: controls.forward();break;
+          case 39: controls.rotateRight();break;
+          case 40: controls.backward();break;
+          case 32: controls.shoot();break;
         }
       });
    };
+
+  function join() {
+      socket.emit('join');
+   };
+
+  socket.on('update', function (data) {
+      items = [];
+      for(var key in data.ships) {
+          items.push(new exports.Ship(
+            data.ships[key].x,
+            data.ships[key].y,
+            data.ships[key].color,
+            data.ships[key].angle,
+            data.ships[key].mov_x,
+            data.ships[key].mov_y,
+            data.ships[key].rotation));
+          }
+          _.each(data.bullets, function (bullet){
+               items.push(new exports.Bullet(
+                  bullet.x,
+                  bullet.y,
+                  bullet.angle,
+                  bullet.id
+              ));
+           });
+  });
    
-   return { start : function (canvasId){
-      canvas = $(canvasId)[0];
-      ctx = canvas.getContext('2d');
-      ship = new Ship(500,500,'red')
-      items.push(ship);
-      items.push(new Ship(200,200,'blue'));
-      initControls();
-      setInterval(function (){
-         repaint(ctx);
-         _.each(items,function (item){
-           item.move();
-         });
-      },1000 / FPS);
-   }
+   return { start : function (canvasId) {
+        canvas = $(canvasId)[0];
+        ctx = canvas.getContext('2d');
+        repaint(ctx);
+        join();
+        initControls();   
+        setInterval(function (){
+            repaint(ctx);
+            _.each(items, function (item){
+              item.move();
+            });
+        },1000 / exports.FPS);
+      }
    };
 };
